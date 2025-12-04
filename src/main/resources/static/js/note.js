@@ -147,16 +147,19 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	function loadNoteFromDB(date) {
-	    fetch(`/note/list/byDate?date=${date}`)
-	        .then(res => res.json())
-	        .then(data => {
-	            if (data.length > 0) {
-	                note.value = data[0].content;
-	            } else {
-	                note.value = "";
-	            }
-	        });
-	}
+    if (!date) date = new Date().toISOString().split("T")[0];
+
+    fetch(`/note/list/byDate?date=${date}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.length > 0) {
+                note.value = data[0].content;
+            } else {
+                note.value = "";
+            }
+        });
+}
+
 
     /* ==========================================
        프리뷰
