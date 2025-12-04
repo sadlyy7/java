@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>필기 모아보기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- 기존 테마 CSS 재사용한다면 경로만 맞춰줘 -->
+  <link rel="stylesheet" th:href="@{/css/Note.css}" />
+  <style>
+    .collect-app {
+      padding: 12px 16px;
+      height: 100vh;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 12px;
+    }
+
+    .collect-left {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .collect-right {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #ffffff, #edf4ff);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .date-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .date-item {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .date-item.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .collect-no-data {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .note-main-box {
+      flex: 1;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      padding: 16px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+    }
+
+    .note-main-placeholder {
+      color: var(--muted);
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    .note-thumbs {
+      margin-top: 8px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #f8f9ff;
+      padding: 8px;
+      min-height: 52px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .note-thumb-btn {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .note-thumb-btn:hover {
+      background: #e8f0ff;
+    }
+
+    .collect-header-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .collect-header-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .collect-app {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="collect-app">
+	<input type="hidden" id="studentId" th:value="${session.student.id}">
+
+  <!-- 🔹 왼쪽: 날짜 필터 -->
+  <section class="collect-left">
+    <h3 style="margin:0 0 8px 0;">필터</h3>
+    <div class="collect-header-sub">날짜별 필기</div>
+
+    <ul id="dateList" class="date-list"></ul>
+
+    <div id="noDateMessage" class="collect-no-data">
+      저장된 필기가 없습니다.
+    </div>
+  </section>
+
+  <!-- 🔹 오른쪽: 필기 내용 -->
+  <section class="collect-right">
+    <div>
+      <div class="collect-header-title" id="selectedDateTitle">
+        날짜를 선택해주세요
+      </div>
+      <div class="collect-header-sub">
+        왼쪽에서 날짜를 선택하면, 이곳에 필기 내용을 크게 보여드릴게요.
+      </div>
+    </div>
+
+    <div id="noteContentArea" class="note-main-box">
+      <div class="note-main-placeholder">
+        아직 선택된 필기가 없습니다.<br />
+        왼쪽에서 날짜를 고른 뒤, 아래의 필기 목록에서 보고 싶은 항목을 눌러 주세요.
+      </div>
+    </div>
+
+    <div>
+      <div class="collect-header-sub" style="margin-bottom:4px;">
+        해당 날짜의 필기 목록
+      </div>
+      <div id="noteThumbList" class="note-thumbs">
+        <!-- JS에서 버튼들이 들어옴 -->
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script src="/js/Memo.js" defer></script>
+<!-- 또는 thymeleaf라면: <script th:src="@{/js/note-collect.js}"></script> -->
+</body>
+</html>

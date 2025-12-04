@@ -1,0 +1,152 @@
+@font-face {
+  font-family: 'HsJandari';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2510-2@1.0/HSJandari.woff2') format('woff2');
+  font-weight: normal;
+  font-display: swap;
+}
+
+/* 기본 폰트 + 전체 레이아웃 */
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: rgb(238, 249, 253);
+}
+
+/* 로그인 박스 전체 */
+.wrapper {
+  background-color: #fff;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  padding: 40px 30px 50px;
+  text-align: center;
+}
+
+/* 제목 */
+.wrapper h2 {
+  font-family: 'HsJandari', 'Noto Sans KR', sans-serif;
+  font-size: 30px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* 로그인 입력박스 */
+.login_box,
+.password-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 10px;
+  width: 100%;
+  height: 40px;
+  margin: 20px 0;
+}
+
+/* 라벨 */
+.login_box label {
+  width: 80px;
+  text-align: right;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 입력창 */
+.login_box input {
+  flex: 1;
+  height: 35px;
+  outline: none;
+  border: 2px solid rgba(108, 119, 119, 0.15);
+  border-radius: 20px;
+  padding-left: 15px;
+  transition: all 0.2s ease;
+}
+
+/* 입력창 포커스 */
+.login_box input:focus {
+  border-color: rgb(47, 94, 197);
+  box-shadow: 0 0 5px rgba(47, 94, 197, 0.3);
+}
+
+/* 아이콘 */
+.login_box i {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #777;
+  font-size: 18px;
+}
+
+/* 로그인 버튼 */
+.submit_btn {
+  width: 160px;
+  height: 45px;
+  background-color: rgb(183, 210, 228);
+  font-size: 16px;
+  color: rgb(22, 20, 20);
+  border: none;
+  outline: none;
+  border-radius: 18px;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* 로그인 버튼 hover */
+.submit_btn:hover {
+  background-color: rgb(47, 94, 197);
+  color: #fff;
+}
+
+/* 가입 링크 */
+.login_link p {
+  margin-top: 20px;
+  font-size: 13px;
+  color: rgb(43, 27, 27);
+}
+
+.login_link p a {
+  color: rgb(59, 108, 243);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login_link p a:hover {
+  text-decoration: underline;
+}
+
+/* 에러 메시지 */
+.error {
+  color: #c0392b;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+/* 로그아웃 / 홈 버튼 */
+.logout_btn {
+  width: 160px;
+  height: 45px;
+  background-color: rgb(68, 26, 26);
+  font-size: 16px;
+  color: rgb(255, 255, 255);
+  border: none;
+  outline: none;
+  border-radius: 18px;
+  margin-top: 100px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logout_btn:hover {
+  background-color: rgb(47, 94, 197);
+  color: white;
+}

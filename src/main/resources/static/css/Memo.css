@@ -1,0 +1,255 @@
+/* --------------------------------------
+   공통 색상 (Note.css와 동일)
+-------------------------------------- */
+:root {
+  --bg: #f0f6ff;
+  --panel: #ffffff;
+  --panel-2: #f8faff;
+  --border: #b7c6ec;
+  --text: #1a1a1a;
+  --muted: #556;
+  --accent: #7e93ff;
+}
+
+body {
+  background: #e9f4f9;
+  margin: 0;
+  font: 14px/1.45 "Segoe UI", "Apple SD Gothic Neo", sans-serif;
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ======================================
+   🔹 상단 헤더
+====================================== */
+.memo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: #c4d9e9;
+  border-bottom: 1px solid var(--border);
+}
+
+.memo-header-badge {
+  padding: 4px 14px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), #bfb9db);
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.memo-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.memo-header-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  padding: 7px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.15s;
+}
+
+.btn:hover {
+  background: #e8f0ff;
+}
+
+/* ======================================
+   🔹 전체 레이아웃
+====================================== */
+.memo-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+  padding: 16px;
+  min-height: calc(100vh - 60px);
+}
+
+@media (max-width: 900px) {
+  .memo-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ======================================
+   🔹 좌측 사이드바
+====================================== */
+.memo-sidebar {
+  background: var(--panel);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.memo-sidebar-header {
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3a4a6b;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.8);
+}
+
+.memo-sidebar-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 카테고리 / 날짜 필터 */
+.memo-filter-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.memo-filter-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.memo-select {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  background: var(--panel-2);
+  font-size: 13px;
+}
+
+/* 날짜 리스트 */
+.memo-date-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.memo-date-item {
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.memo-date-item:hover {
+  background: #eef3ff;
+}
+
+.memo-date-item.active {
+  background: var(--accent);
+  color: white;
+}
+
+/* ======================================
+   🔹 우측 메인
+====================================== */
+.memo-main {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f4f7ff 60%,
+    #edf4ff 100%
+  );
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* 상단 정보 */
+.memo-main-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.memo-main-header-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.memo-main-header-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ======================================
+   🔹 큰 이미지 프리뷰
+====================================== */
+.memo-preview {
+  border: 1px solid #ccd3e4;
+  border-radius: 14px;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  height: 320px;
+  overflow: hidden;
+}
+
+.memo-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.memo-preview-empty {
+  font-size: 13px;
+  color: #99a;
+}
+
+/* ======================================
+   🔹 썸네일 리스트
+====================================== */
+.memo-thumbs-label {
+  font-size: 12px;
+  color: #667;
+}
+
+.memo-thumbs-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.memo-thumbs-row img {
+  height: 80px;
+  border-radius: 10px;
+  border: 1px solid #ccd3e4;
+  background: #fff;
+  cursor: pointer;
+  transition: all .12s ease;
+}
+
+.memo-thumbs-row img:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.memo-thumbs-row img.active {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

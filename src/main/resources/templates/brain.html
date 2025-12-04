@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>브레인스토밍 보드</title>
+  <link rel="stylesheet" th:href="@{/css/brain.css}" />
+</head>
+<body>
+  <header>
+    <!-- 파일명이 아니라 라우트로 이동 -->
+    <button type="button" onclick="location.href='/main'">Home</button>
+    <!-- 또는: <a class="btn" th:href='@{/main}'>Home</a> -->
+    <h1>브레인스토밍</h1>
+    <div></div>
+  </header>
+
+  <div class="input-area">
+    <input type="text" id="ideaInput" placeholder="아이디어를 입력하세요..." />
+    <select id="categorySelect">
+      <option value="기본">카테고리 선택</option>
+      <option value="아이디어">아이디어</option>
+      <option value="문제점">문제점</option>
+      <option value="해결방안">해결방안</option>
+      <option value="기타">기타</option>
+      <option value="__add__">+ 새 카테고리 추가</option>
+    </select>
+
+    <select id="colorSelect">
+      <option value="" selected>색상 선택</option>
+      <option value="color-yellow" style="background:#fff3bf;">노랑</option>
+      <option value="color-blue"   style="background:#a5d8ff;">파랑</option>
+      <option value="color-green"  style="background:#b2f2bb;">초록</option>
+      <option value="color-purple" style="background:#d0bfff;">보라</option>
+      <option value="color-pink"   style="background:#fcc2d7;">핑크</option>
+      <option value="color-teal"   style="background:#96f2d7;">민트</option>
+    </select>
+
+    <button id="addIdeaBtn">추가</button>
+  </div>
+
+  <div class="category-tabs" id="categoryTabs">
+    <div class="tab active" data-category="아이디어">아이디어</div>
+    <div class="tab" data-category="문제점">문제점</div>
+    <div class="tab" data-category="해결방안">해결방안</div>
+    <div class="tab" data-category="기타">기타</div>
+  </div>
+
+  <div class="board-container" id="board"></div>
+
+  <script>
+    const board = document.getElementById("board");
+    const addBtn = document.getElementById("addIdeaBtn");
+    const input = document.getElementById("ideaInput");
+    const categorySelect = document.getElementById("categorySelect");
+    const tabsContainer = document.getElementById("categoryTabs");
+    const colorSelect = document.getElementById("colorSelect");
+
+    let currentCategory = "아이디어";
+
+    // 색상 선택 시 select 배경색 변경
+    colorSelect.addEventListener("change", () => {
+      const selected = colorSelect.options[colorSelect.selectedIndex];
+      const bg = selected.style.background || "#fff";
+      colorSelect.style.background = bg;
+    });
+	  
+	let spaceId = null;
+
+// ⭐ 팀 ID를 localStorage에서 가져오기
+const teamId = localStorage.getItem("selectedTeamId");
+
+if (!teamId) {
+  alert("팀이 선택되지 않았습니다! 메인 화면에서 팀을 선택하세요.");
+  location.href = "/main";
+}
+
+// ⭐ 팀 ID 기반 공간 초기화
+async function initBrain() {
+  try {
+    const res = await fetch(`/api/brainstorm/spaces/spaceId/${teamId}`);
+    spaceId = await res.json();
+
+    console.log("📌 teamId:", teamId);
+    console.log("📌 spaceId:", spaceId);
+
+    loadIdeas();
+  } catch (err) {
+    console.error("초기화 오류:", err);
+  }
+}
+
+initBrain();
+
+    // 탭 클릭 시 카테고리 변경
+    function refreshTabListeners() {
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.onclick = () => {
+          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          currentCategory = tab.dataset.category;
+          loadIdeas();
+        };
+      });
+    }
+    refreshTabListeners();
+
+    // 새 카테고리 추가
+    categorySelect.addEventListener("change", () => {
+      if (categorySelect.value === "__add__") {
+        const newCat = prompt("새 카테고리 이름 입력:");
+        if (!newCat) { categorySelect.value = currentCategory; return; }
+
+        const option = document.createElement("option");
+        option.value = newCat;
+        option.textContent = newCat;
+        categorySelect.insertBefore(option, categorySelect.lastElementChild);
+        categorySelect.value = newCat;
+
+        const tab = document.createElement("div");
+        tab.className = "tab";
+        tab.dataset.category = newCat;
+        tab.textContent = newCat;
+        tabsContainer.appendChild(tab);
+        refreshTabListeners();
+      }
+    });
+
+    /// 서버에 아이디어 추가
+    addBtn.addEventListener("click", addIdea);
+    input.addEventListener("keypress", e => { if (e.key === "Enter") addIdea(); });
+
+	function addIdea() {
+	  if (!spaceId) return alert("공간 초기화 중!");
+
+	  const message = input.value.trim();
+	  const category = categorySelect.value;
+	  let color = colorSelect.value || "color-yellow";
+
+	  if (!message) return alert("아이디어를 입력하세요!");
+	  if (category === "기본") return alert("카테고리를 선택하세요!");
+
+	  const idea = {
+	    spaceId,
+	    userId: 100,
+	    message,
+	    category,
+	    color,
+	    posX: 200,
+	    posY: 200,
+	    votes: 0
+	  };
+
+	  fetch("/api/brainstorm/messages", {
+	    method: "POST",
+	    headers: {"Content-Type": "application/json"},
+	    body: JSON.stringify(idea)
+	  })
+	  .then(() => {
+	    input.value = "";
+	    loadIdeas();
+	  })
+	  .catch(err => console.error("저장 오류:", err));
+	}
+    /// 서버에서 불러오기
+	function loadIdeas() {
+	  if (!spaceId) return;
+	  fetch(`/api/brainstorm/messages/${spaceId}`)
+	    .then(res => res.json())
+	    .then(data => renderIdeas(data))
+	    .catch(err => console.error("불러오기 오류:", err));
+	}
+
+
+    /// 화면 렌더링 (서버 데이터 기준)
+    function renderIdeas(ideas = []) {
+      board.innerHTML = "";
+      const filtered = ideas.filter(i => i.category === currentCategory);
+
+      filtered.forEach((idea) => {
+        const note = document.createElement("div");
+        note.className = `sticky-note ${idea.color || "color-yellow"}`;
+        note.style.top = `${idea.posY}px`;
+        note.style.left = `${idea.posX}px`;
+        note.innerHTML = `
+          <div>${idea.message}</div>
+          <div class="category-tag">#${idea.category}</div>
+          <div class="recommend-tab">추천 ${idea.votes}</div>
+          <div class="delete-btn">삭제</div>
+        `;
+
+        // 추천 증가
+        note.querySelector(".recommend-tab").addEventListener("click", () => {
+          idea.votes++;
+          updateIdea(idea);
+        });
+
+        // 삭제 버튼
+        note.querySelector(".delete-btn").addEventListener("click", () => {
+          deleteIdea(idea.id);
+        });
+
+        // 드래그 이동
+        makeDraggable(note, idea);
+
+        board.appendChild(note);
+      });
+    }
+
+    /// 서버에서 아이디어 업데이트(추천+위치)
+    function updateIdea(idea) {
+      fetch(`/api/brainstorm/messages/${idea.id}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(idea)
+      })
+      .then(() => loadIdeas())
+      .catch(err => console.error("업데이트 오류:", err));
+    }
+
+    /// 서버에서 삭제
+    function deleteIdea(id) {
+      fetch(`/api/brainstorm/messages/${id}`, {
+        method: "DELETE"
+      })
+      .then(() => loadIdeas())
+      .catch(err => console.error("삭제 오류:", err));
+    }
+
+    /// 드래그 이동 후 서버 저장
+    function makeDraggable(el, idea) {
+      let isDragging = false;
+      let offsetX, offsetY;
+
+      el.addEventListener("mousedown", (e) => {
+        if (e.target.classList.contains("recommend-tab") || e.target.classList.contains("delete-btn")) return;
+        isDragging = true;
+        offsetX = e.clientX - el.offsetLeft;
+        offsetY = e.clientY - el.offsetTop;
+        el.style.zIndex = 1000;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        el.style.left = `${e.clientX - offsetX}px`;
+        el.style.top = `${e.clientY - offsetY}px`;
+      });
+
+      window.addEventListener("mouseup", () => {
+        if (isDragging) {
+          isDragging = false;
+          el.style.zIndex = 1;
+
+          idea.posX = el.offsetLeft;
+          idea.posY = el.offsetTop;
+          updateIdea(idea);
+        }
+      });
+    }
+
+    /// 첫 화면 로딩
+    loadIdeas();
+  </script>
+
+</body>
+</html>
+

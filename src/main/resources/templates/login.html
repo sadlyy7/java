@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <!-- 🔹 CSS 경로 수정 -->
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- 🔹 POST 방식 + Spring Controller 매핑 -->
+        <form method="post" th:action="@{/login}">
+            <h2>로그인</h2>
+
+			<div class="login_box">
+			    <label for="email">아이디</label>
+			    <input type="text" id="email" name="email" placeholder="이메일 입력" autocomplete="off" required>
+			</div>
+
+            <div class="login_box">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" placeholder="비밀번호" autocomplete="off" required>
+                <i class="bx bxs-lock"></i>
+            </div>
+
+            <button type="submit" class="submit_btn">로그인</button>
+
+            <div class="login_link">
+                <p>계정이 없으신가요? <a href="#" th:href="@{/register}">가입하기</a></p>
+            </div>
+
+            <!-- 🔹 로그인 실패 시 에러 메시지 표시 -->
+            <p th:if="${error}" class="error" th:text="${error}"></p>
+        </form>
+    </div>
+	<script th:src="@{/js/login.js}"></script>
+</body>
+</html>
