@@ -62,16 +62,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if (f && f.type === "application/pdf") openPDF(f);
     });
 
-    function openPDF(f) {
-        currentFileName = f.name;
-        const url = URL.createObjectURL(f);
+ function openPDF(f, date) {
+    currentFileName = f.name;
+    const url = URL.createObjectURL(f);
 
-        placeholder.style.display = "none";
-        pdfObj.style.display = "block";
-        pdfObj.data = url + "#toolbar=1&view=FitH";
+    placeholder.style.display = "none";
+    pdfObj.style.display = "block";
+    pdfObj.data = url + "#toolbar=1&view=FitH";
 
-        loadNoteFromDB();
-    }
+    loadNoteFromDB(date);
+}
+
 
     /* ==========================================
        카테고리
