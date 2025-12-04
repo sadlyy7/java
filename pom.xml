@@ -19,7 +19,8 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <java.version>21</java.version>
+        <!-- 🔥 반드시 17로 설정! -->
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>
